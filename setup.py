@@ -5,6 +5,6 @@ setuptools.setup(
     author="Atom Scott",
     version="0.1dev",
     packages=setuptools.find_packages(),
-    license="Creative Commons Attribution-Noncommercial-Share Alike license",
+    license="MIT license",
     long_description=open("README.md").read(),
 )
