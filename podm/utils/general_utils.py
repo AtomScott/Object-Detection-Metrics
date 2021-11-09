@@ -1,10 +1,22 @@
 import fnmatch
 import os
+import pickle
 
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 from podm.utils.enumerators import BBFormat
+
+
+def load_bb(filepath):
+    with open(filepath, 'rb') as f: 
+        bblist = pickle.loads(f.read())
+    return bblist
+
+def save_bb(obj, filename):
+    with open(filename, 'wb') as outp:  # Overwrites any existing file.
+        pickle.dump(obj, outp, pickle.HIGHEST_PROTOCOL)
+    print(f'saved to {filename}')
 
 
 def get_classes_from_txt_file(filepath_classes_det):
