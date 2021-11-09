@@ -440,6 +440,45 @@ def yolo2bb(
                 ret.append(bb)
     return ret
 
+def bb2yolo(
+    bb_path,
+    file_obj_names,
+    out_dir,
+    yolov5=False,
+):
+    bblist = general_utils.load_bb(bb_path)
+    if not os.path.isfile(file_obj_names):
+        print(f"Warning: File with names of classes {file_obj_names} not found.")
+        return 
+
+    # Load classes
+    all_classes = []
+    with open(file_obj_names, "r") as f:
+        all_classes = [line.replace("\n", "") for line in f]
+
+    os.makedirs(out_dir, exist_ok=True)
+
+    for bb in bblist:
+        txt_path = os.path.join(out_dir, bb._image_name + '.txt')
+        try:
+            x1, y1, w, h = bb.get_relative_bounding_box()
+        except IOError:
+            return IOError("Bounding Box has `None` set for img sizes.")
+
+        class_id = all_classes.index(bb.get_class_id())
+        confidence = bb.get_confidence()
+
+        if confidence is None:
+            line = ''.join([class_id, x1, y1, w, h])
+        else:
+            if yolov5:
+                line = ''.join([class_id, x1, y1, w, h, confidence])
+            else:
+                line = ''.join([class_id, confidence, x1, y1, w, h])
+
+        with open(txt_path, 'a+') as f:
+            f.write(line + '\n')
+
 
 def xml2csv(xml_path):
     # Adapted from https://stackoverflow.com/questions/63061428/convert-labelimg-xml-rectangles-to-labelme-json-polygons-with-image-data
