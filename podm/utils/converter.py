@@ -467,14 +467,15 @@ def bb2yolo(
 
         class_id = all_classes.index(bb.get_class_id())
         confidence = bb.get_confidence()
+        print(bb._image_name, class_id, x1, y1, w, h, confidence)
 
         if confidence is None:
-            line = ''.join([class_id, x1, y1, w, h])
+            line = f"{class_id}, {x1}, {y1}, {w}, {h}"
         else:
             if yolov5:
-                line = ''.join([class_id, x1, y1, w, h, confidence])
+                line = f"{class_id}, {x1}, {y1}, {w}, {h}, {confidence}"
             else:
-                line = ''.join([class_id, confidence, x1, y1, w, h])
+                line = f"{class_id}, {confidence}, {x1}, {y1}, {w}, {h}"
 
         with open(txt_path, 'a+') as f:
             f.write(line + '\n')
